@@ -20,9 +20,10 @@
 ### Switch Component 
     sw::=  case e s | default s
  ### Expression 
-    e::=  n | b |str | null | x | x = e | x cbop = e | e1.e2 = e3 | e1.e2 op = e3 |  e1 ? e2 : e3 | e1.e2
-    | new e1(\vec{e2}) | e1(\vec{e2}) | function [x](\vec{x}) s | e1 bop e2 | unOp e | \{ \vec{<str, e>} \ 
-    | [\vec{e}] | this| delete e | ++x | ++e1.e2 | x++ | e1.e2++ | --x | --e1.e2| x-- | e1.e2-- | eval S 
+    e::=  n | b |str | null | x | x = e | x cbop = e | e1.e2 = e3 | e1.e2 op = e3 
+    |  e1 ? e2 : e3 | e1.e2 | new e1(\vec{e2}) | e1(\vec{e2}) | function [x](\vec{x}) s 
+    | e1 bop e2 | unOp e | \{ \vec{<str, e>} \ | [\vec{e}] | this| delete e | ++x 
+    | ++e1.e2 | x++ | e1.e2++ | --x | --e1.e2| x-- | e1.e2-- | eval S 
 
 ### Statement
     s::= e | \vec{s} | while e s | do s while e | for x in s | for e.e in s 
