@@ -15,6 +15,12 @@ class s:
             "try([" + x() + s() + "] [" + s() + "])",
             "throw(" + e() + ")",
             "lbl:" + s(),
-
-            # Next: break [lbl]
+            "break [" + "lbl" + "]",
+            "continue [" + "lbl" + "]",
+            "with " + e() + s(),
+            "return [" + e() + "]",
+            "switch" + e() + "'\'" + "<{" + sw() + "}>", # or s() + w() ? 
         ]
+    def eval(self):
+        return 'a statement'
+            
