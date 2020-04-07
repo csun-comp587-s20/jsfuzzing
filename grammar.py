@@ -1,3 +1,5 @@
+from random import randint
+
 class cbop:
     def __init__(self):
         self.value = ["+", "-", "*", "/", "<<", ">>", ">>>", "&", "|", "^"]
@@ -13,6 +15,7 @@ class Integer:
 class Boolean:
     def __init__(self):
         self.value = [true, false]
+
         
 class String:
     def __init__(self):
@@ -21,7 +24,6 @@ class String:
 class Variable: 
     def __init__(self):
         self.value = ["Pets", "Pies"]
-
 
 # expression
 class e:
