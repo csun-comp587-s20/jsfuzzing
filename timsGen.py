@@ -8,4 +8,7 @@ class if_statement:
         if bound < 0:
             yield None
         else:
-            yield ("(if({}){}{})".format(expression().gen(bound-1),statement().gen(bound-1),statement().gen(bound-1)))
+            for expr1 in expression().gen(bound -1):
+                for stmt1 in statement().gen(bound-1):
+                    for stmt2 in statement().gen(bound-1):
+                        yield "(if({}){}{})".format(expr1,stmt1, stmt2)
