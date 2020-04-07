@@ -34,6 +34,8 @@ class varName:
 #         return self.e1 + "." + self.e2 + " = " + self.e3
 #
 #     def gen(self, bound):
+# technically you should never call this if you have bound <= 0 but its ok to check but maybe we should throw an error
+# instead
 #         if bound <= 0:
 #             yield
 #         else:
