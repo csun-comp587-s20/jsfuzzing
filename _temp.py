@@ -99,8 +99,9 @@ class statement:
             yield
         else:
             self.value = [expression(), whileStatement()]
-            if inspect.isclass(each):
-                yield each.gen(bound-1)
+			for each in self.value:
+				if inspect.isclass(each):
+					yield each.gen(bound-1)
 					
 class whileStatement:
 	def gen(self, bound):
