@@ -92,3 +92,24 @@ class bool_not:
             yield None
             for component in true_false().gen(bound-1):
                 yield component
+				
+class statement: 
+    def gen(self, bound):
+        if bound <= 0:
+            yield
+        else:
+            self.value = [expression(), whileStatement()]
+            if inspect.isclass(each):
+                yield each.gen(bound-1)
+					
+class whileStatement:
+	def gen(self, bound):
+		if bound <= 0:
+			yield
+		else
+            yield None  
+			for exp in expression().gen(bound-1):
+                for stmt in statement().gen(bound-1):
+                    yield "(while {} {})".format(exp, stmt)
+				
+				
