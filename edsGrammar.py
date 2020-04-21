@@ -23,13 +23,13 @@ class varName:
 # eds implementation have class variables represent the inner nodes 4/6/2020
 # take a look please ?
 class parameterAssignment:
-    def __init__(self, e1, e2, e3):
+    def __init__(self, e1=None, e2=None, e3=None):
         self.e1 = e1
         self.e2 = e2
         self.e3 = e3
 
     def __str__(self):
-        return self.e1 + "." + self.e2 + " = " + self.e3
+        return str(self.e1) + "." + str(self.e2) + " = " + str(self.e3)
 
     def gen(self, bound):
         for e1 in expression().gen(bound - 1):
@@ -43,23 +43,24 @@ class parameterAssignment:
 # removes the need to check if it is a class or not.
 
 def test():
-    for item in expression().gen(1):
+    for item in expression().gen(2):
         print(item)
 
 
 class expression:
     def __init__(self):
-        self.value = [parameterAssignment]
+        self.value = [parameterAssignment()]
 
     def gen(self, bound):
         if bound <= 0:
             self.value = [integer(), varName()]
             for each in self.value:
-                yield next(each.gen(0))
+                for item in each.gen(0):
+                    yield item
         else:
             for each in self.value:
-                nextval = bound - 1
-                yield each.gen(nextval)
+                for item in each.gen(bound-1):
+                    yield item
 
 
 
