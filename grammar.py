@@ -1,129 +1,94 @@
-# true_false ::= True | False | And(true_false, true_false)
 import inspect
 
 
 class integer:
-    def gen(self, bound):
-        if bound <= 0:
-            yield
-        else:
-            self.value = [1, 2]
-            for each in self.value:
-                yield each
+    def __init__(self):
+        self.value = [0,1]
 
+    def gen(self):
+        for each in self.value:
+            yield each
+
+class boolean:
+    def __init__(self):
+        self.value = [True, False]
+
+    def gen(self):
+        for each in self.value:
+            yield each
 
 class varName:
-    def gen(self, bound):
-        if bound <= 0:
-            yield
-        else:
-            self.value = ["PETS", "PIES"]
-            for each in self.value:
-                yield each
+    def __init__(self):
+        self.value =["PETS", "PIES"]
 
-
-class assignment:
-    def gen(self, bound):
-        if bound <= 0:
-            yield
-        else:
-            for exp in expression().gen(bound - 1):
-                for var in varName().gen(bound - 1):
-                    yield "{} = {}".format(var, exp)
-
+    def gen(self):
+        for each in self.value:
+            yield each
 
 class expression:
+    def __init__(self):
+        self.value = [expressiondotexpression()]
+
     def gen(self, bound):
         if bound <= 0:
-            yield
-        else:
-            self.value = [expressiondotexpression(), assignment()]
+            self.value = [integer(), varName()]
             for each in self.value:
-                yield each.gen(bound - 1)
+                for item in each.gen(0):
+                    yield item
+        else:
+            for each in self.value:
+                for item in each.gen(bound -1):
+                    yield item
 
 class expressiondotexpression:
+    def __init__(self, e1, e2):
+            self.e1 = e1
+            self.e2 = e2
+
+    def __str__(self):
+        return str(self.e1) + "." + str(self.e2)
+
+    def gen(self, bound):
+        for e1 in expression().gen(bound -1):
+            for e2 in expression().gen(bound-1):
+                yield expressiondotexpression(e1, e2)
+
+class statement:
     def gen(self, bound):
         if bound <= 0:
-            yield
+            self.value = [ifStatement(), whileStatement(), expression()]
+            for each in self.value:
+                for item in each.gen(0):
+                    yield item
         else:
-            for exp1 in varName().gen(bound - 1):
-                for exp2 in integer().gen(bound - 1):
-                    yield "{}.{}".format(exp1, exp2)
+            for each in self.value:
+                for item in each.gen(bound -1):
+                    yield item
 
-# import random
-# class GenerateTerm:
-#     def genTerm(self):
-#         randInt = random.randint(0, len(self.value)-1)
-#         return self.value[randInt]
-#
-# class cbop:
-#     def __init__(self):
-#         self.value = ["+", "-", "*", "/", "<<", ">>", ">>>", "&", "|", "^"]
-#
-# class bop:
-#     def __init__(self):
-#         self.value = [GenerateTerm.genTerm(cbop()), "<", "<=", ">", "==", "!=", "===", "!==", "&&", "||", "in", ",", "instanceof"]
-#
-# class n:
-#     def __init__(self):
-#         self.value = [0, 1]
-#
-# class b:
-#     def __init__(self):
-#         self.value = [True, False]
-#
-# class str:
-#     def __init__(self):
-#         self.value = ["A", "B"]
-#
-# class x:
-#     def __init__(self):
-#         self.value = ["Pets", "Pies"]
-#
-# class unOp:
-#     def __init__(self):
-#         self.value = ["void", "typeof", "+", "-", "~", "!"]
-#
-# class sw:
-#     def __init__(self):
-#         self.value =["case" + e() + "" + s(), "default" +s()]
-#
-# class e:
-#     def __init__(self):
-#         self.value =[
-#                         GenerateTerm.genTerm(n()),# integer
-#                         GenerateTerm.genTerm(b()), # boolean
-#                         GenerateTerm.genTerm(str()), # string
-#                        "null", # Null
-#                         GenerateTerm.genTerm(x()),  # variable
-#                        # x() + "=" + e()
-#                        # x() + cbop() + "=" + e() ,
-#                        # e()+"" + e()  + "=" +e() ,
-#                        # e() + "." + e() +" " + unOp() + "=" + e(),
-#                        # e()  + "?" +e() +":" + e(),
-#                        # e() + "." + e(),
-#                        # "new" + ""+ e() + "(" +")",
-#                        # "new" + ""+ e() + "(" + e() + ")",
-#                        # e() + "("  + ")",
-#                        # e() + "(" + e() + ")",
-#                        # "function" + "[" +x() + "]" + "("+ ")" + s() ,
-#                        # "function" + "[" +x()+ "]" + "(" + e() +")" + s() ,
-#                        # e() + bop() +""+ e() ,
-#                        # unOp() +""+  e() ,
-#                        # "{" + "}" ,
-#                        # "{" + "<"+str() +"," + e()+ ">"+ "}" ,
-#                        # "["+ "]",
-#                        # "["+ e()+ "]",
-#                        # "this",
-#                        # "delete" + e(),
-#                        # "++" + x(),
-#                        # "++" + e()+ "." + e(),
-#                        # x() + "++" ,
-#                        # e()+ "." + e() + "++" ,
-#                        # "--"+ x(),
-#                        # "--" + e()+"."+e(),
-#                        # x()+"--" ,
-#                        # e()+"."+e()+"--" ,
-#                        # "eval" + s(),
-#         ]
+class ifStatement:
+    def __init__(self, e1, stmt1, stmt2):
+        self.e1 = e1
+        self.stmt1 = stmt1
+        self.stmt2 = stmt2
 
+    def __str__(self):
+        return str("if(" +e1 +") " +stmt1 + " " + stmt2)
+
+    def gen(self,bound):
+        for e1 in expression().gen(bound -1):
+            for stmt1 in statement().gen(bound-1):
+                for stmt2 in statement().gen(bound-1):
+                    yield ifStatement(e1, stmt1, stmt2)
+
+class whileStatement:
+     def __init__(self, e1, stmt1):
+        self.e1 = e1
+        self.stmt1 = stmt1
+
+    def __str__(self):
+        return str("while " +e1 +" " +stmt1 +)
+
+    def gen(self,bound):
+        for e1 in expression().gen(bound -1):
+            for stmt1 in statement().gen(bound-1):
+                    yield whileStatement(e1, stmt1)
