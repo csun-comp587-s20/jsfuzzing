@@ -34,7 +34,7 @@ class string:
             yield each
 
 class expression:
-    def __init__(self):
+    def __init__(self, value=None):
         self.value = [ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
     def gen(self, bound):
@@ -90,12 +90,12 @@ class Exp1DotExp2:
                 yield Exp1DotExp2(e1, e2)
 
 class statement:
-    def __init__(self):
-        self.value = [expression()]
-        
+    def __init__(self, value=None):
+        self.value = [ifStatement(), whileStatement()]
+
     def gen(self, bound):
         if bound <= 0:
-            self.value = [ifStatement(), whileStatement()]
+            self.value = [expression()]
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -105,7 +105,7 @@ class statement:
                     yield item
 
 class ifStatement:
-    def __init__(self, e1, stmt1, stmt2):
+    def __init__(self, e1=None, stmt1=None, stmt2=None):
         self.e1 = e1
         self.stmt1 = stmt1
         self.stmt2 = stmt2
@@ -120,7 +120,7 @@ class ifStatement:
                     yield ifStatement(e1, stmt1, stmt2)
 
 class whileStatement:
-    def __init__(self, e1, stmt1):
+    def __init__(self, e1=None, stmt1=None):
         self.e1 = e1
         self.stmt1 = stmt1
 
@@ -132,6 +132,6 @@ class whileStatement:
             for stmt1 in statement().gen(bound-1):
                     yield whileStatement(e1, stmt1)
 
-def test(self,genValues):
+def test(genValues):
     for item in genValues:
         print(item)
