@@ -132,6 +132,13 @@ class whileStatement:
             for stmt1 in statement().gen(bound-1):
                     yield whileStatement(e1, stmt1)
 
-def test(genValues):
-    for item in genValues:
-        print(item)
+def main(genValue):
+    gen = statement([ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()])
+    gen = gen.gen(genValue)
+    f = open("test.txt", "w")
+    for item in gen:
+        f.write(str(item)+ "\n")
+    f.close
+
+if __name__ == "__main__":
+    main(2)
