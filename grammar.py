@@ -1,94 +1,137 @@
-class cbop:
+import inspect
+
+
+class integer:
     def __init__(self):
-        self.value = ["+", "-", "*", "/", "<<", ">>", ">>>", "&", "|", "^"]
+        self.value = [0,1]
 
-class bop:
+    def gen(self):
+        for each in self.value:
+            yield each
+
+class boolean:
     def __init__(self):
-        self.value = [cbop(), "<", "<=", ">", "==", "!=", "===", "!==", "&&", "||", "in", ",", "instanceof"]
+        self.value = [True, False]
 
-class Integer:
+    def gen(self):
+        for each in self.value:
+            yield each
+
+class varName:
     def __init__(self):
-        self.value = [0, 1]
+        self.value =["PETS", "PIES"]
 
-class Boolean:
+    def gen(self):
+        for each in self.value:
+            yield each
+
+class string:
     def __init__(self):
-        self.value = [true, false]
-        
-class String:
-    def __init__(self):
-        self.value = ["A", "B"]
+        self.value =["A", "B"]
 
-class Variable: 
-    def __init__(self):
-        self.value = ["Pets", "Pies"]
+    def gen(self):
+        for each in self.value:
+            yield each
 
+class expression:
+    def __init__(self, value=None):
+        self.value = [ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
-# expression
-class e:
-    def __init__():
-        self.value =  [
-                       n(), # integer
-                       b(), # boolean
-                       str(), # string
-                       "null", # Null
-                       x(),  # variable
-                       x() + "=" + e(),
-                       x() + cbop() + "=" + e(),
-                       e() + e() + "=" e(),
-                       e() + "." + e() op() + "=" + e(),
-                       e()  + "?" e() +":" + e(),
-                       e() + "." + e(),
-                       "new" + " "+ e() + "(" +")",
-                       "new" + " "+ e() + "(" + e() + ")",
-                       e() + "("  + ")",
-                       e() + "(" + e() + ")",
-                       "function" + "[" +x() + "]" + "("+ ")" + s() ,
-                       "function" + "[" +x() + "]" + "(" + e() +")" + s() ,
-                       e() + bop() + e() ,
-                       unOp() +  e() ,
-                       "{" + "}" ,
-                       "{" + "<"str() +"," + e()+ ">"+ "}" ,
-                       "["+ "]",
-                       "["+ e()+ "]",
-                       "this",
-                       "delete" + e(),
-                       "++" + x(),
-                       "++" + e()+ "." + e(),
-                       x() + "++" ,
-                       e()+ "." + e() + "++" ,
-                       "--"+ x(),
-                       "--" + e()+"."+e(),
-                       x()+"--" ,
-                       e()+"."+e()+"--" ,
-                       "eval" + s(),
-                    ]
-    def eval():
+    def gen(self, bound):
+        if bound <= 0:
+            self.value = [integer(), varName(), boolean(), string()]
+            for each in self.value:
+                for item in each.gen():
+                    yield item
+        else:
+            for each in self.value:
+                for item in each.gen(bound-1):
+                    yield item
 
+class ExpAssignment:
+    def __init__(self, v1=None, e1=None):
+            self.e1 = e1
+            self.v1 = v1
 
-class s:
-    def __init__(self):
-        self.value = [
-            e(),
-            "'\'" + "<{" + s() + "}>",
-            "while" + "(" + e() + "){" + s() + "}",
-            "do{" + s() + "}" + "while(" + e() + ")",
-            "for(" + x() + " in " + s() + ")",
-            "for(" + e() + "." + e() + " in " + s() + ")",
-            "for(" + s() + ";" + e() + ";" + s() + ";" + ")",
-            "var" + x() + "=" + e() + "[," + x() + "=" + e() + "...]",
-            "function" + x() + "'\'" + "<{" + x() + "}>" + s(),
-            "if(" + e() + ")" + s() + " [" + s() + "]",
-            "try([" + x() + s() + "] [" + s() + "])",
-            "throw(" + e() + ")",
-            "lbl:" + s(),
-            "break [" + "lbl" + "]",
-            "continue [" + "lbl" + "]",
-            "with " + e() + s(),
-            "return [" + e() + "]",
-            "switch" + e() + "'\'" + "<{" + sw() + "}>",  # or s() + w() ?
-        ]
+    def __str__(self):
+        return  str(self.v1)+ "=" + str(self.e1)
 
-    def eval(self):
-        return 'a statement'
+    def gen(self, bound):
+        for v1 in varName().gen():
+            for e1 in expression().gen(bound-1):
+                 yield ExpAssignment(e1, v1)
 
+class Exp1DotExp2EqualsExp:
+    def __init__(self, e1=None, e2=None, e3=None):
+            self.e1 = e1
+            self.e2 = e2
+            self.e3 = e3
 
+    def __str__(self):
+        return str(self.e1) + "." + str(self.e2) + "=" + str(self.e3)
+
+    def gen(self, bound):
+        for e1 in expression().gen(bound-1):
+            for e2 in expression().gen(bound-1):
+                for e3 in expression().gen(bound-1):
+                    yield Exp1DotExp2EqualsExp(e1, e2, e3)
+
+class Exp1DotExp2:
+    def __init__(self, e1=None, e2=None):
+            self.e1 = e1
+            self.e2 = e2
+
+    def __str__(self):
+        return str(self.e1) + "." + str(self.e2)
+
+    def gen(self, bound):
+        for e1 in expression().gen(bound-1):
+            for e2 in expression().gen(bound-1):
+                yield Exp1DotExp2(e1, e2)
+
+class statement:
+    def __init__(self, value=None):
+        self.value = [ifStatement(), whileStatement()]
+
+    def gen(self, bound):
+        if bound <= 0:
+            self.value = [expression()]
+            for each in self.value:
+                for item in each.gen(0):
+                    yield item
+        else:
+            for each in self.value:
+                for item in each.gen(bound-1):
+                    yield item
+
+class ifStatement:
+    def __init__(self, e1=None, stmt1=None, stmt2=None):
+        self.e1 = e1
+        self.stmt1 = stmt1
+        self.stmt2 = stmt2
+
+    def __str__(self):
+        return "if(" +str(self.e1) +") " +str(self.stmt1) + " " + str(self.stmt2)
+
+    def gen(self,bound):
+        for e1 in expression().gen(bound-1):
+            for stmt1 in statement().gen(bound-1):
+                for stmt2 in statement().gen(bound-1):
+                    yield ifStatement(e1, stmt1, stmt2)
+
+class whileStatement:
+    def __init__(self, e1=None, stmt1=None):
+        self.e1 = e1
+        self.stmt1 = stmt1
+
+    def __str__(self):
+        return "while " +str(self.e1) +" " +str(self.stmt1)
+
+    def gen(self,bound):
+        for e1 in expression().gen(bound-1):
+            for stmt1 in statement().gen(bound-1):
+                    yield whileStatement(e1, stmt1)
+
+def test(genValues):
+    for item in genValues:
+        print(item)
