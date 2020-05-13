@@ -39,7 +39,8 @@ class string:
 
 class expression:
     def __init__(self, value=None):
-        self.value = [integer(), varName(), boolean(), string(), ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
+        self.value = [integer(), varName(), boolean(), string(),
+                      ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
     def gen(self, bound):
         if bound <= 0:
@@ -63,7 +64,7 @@ class ExpAssignment:
     def gen(self, bound):
         if bound <= 0:
             pass
-        else: 
+        else:
             for v1 in varName().gen():
                 for e1 in expression().gen(bound-1):
                     yield ExpAssignment(e1, v1)
@@ -81,7 +82,7 @@ class Exp1DotExp2EqualsExp:
     def gen(self, bound):
         if bound <= 0:
             pass
-        else: 
+        else:
             for e1 in expression().gen(bound-1):
                 for e2 in expression().gen(bound-1):
                     for e3 in expression().gen(bound-1):
@@ -99,7 +100,7 @@ class Exp1DotExp2:
     def gen(self, bound):
         if bound <= 0:
             pass
-        else: 
+        else:
             for e1 in expression().gen(bound-1):
                 for e2 in expression().gen(bound-1):
                     yield Exp1DotExp2(e1, e2)
@@ -132,7 +133,7 @@ class ifStatement:
     def gen(self, bound):
         if bound <= 0:
             pass
-        else: 
+        else:
             for e1 in expression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     for stmt2 in statement().gen(bound-1):
@@ -150,14 +151,14 @@ class whileStatement:
     def gen(self, bound):
         if bound <= 0:
             pass
-        else: 
+        else:
             for e1 in expression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     yield whileStatement(e1, stmt1)
 
 
 def main(genValue):
-    gen = expression()
+    gen = statement()
     gen = gen.gen(genValue)
     f = open("test.txt", "w")
     for item in gen:
