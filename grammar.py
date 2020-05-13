@@ -39,13 +39,12 @@ class string:
 
 class expression:
     def __init__(self, value=None):
-        self.value = [integer(), varName(), boolean(), string()]
+        self.value = [integer(), varName(), boolean(), string(), ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
     def gen(self, bound):
         if bound <= 0:
-            self.value = [integer(), varName(), boolean(), string()]
             for each in self.value:
-                for item in each.gen():
+                for item in each.gen(0):
                     yield item
         else:
             for each in self.value:
@@ -62,9 +61,12 @@ class ExpAssignment:
         return str(self.v1) + "=" + str(self.e1)
 
     def gen(self, bound):
-        for v1 in varName().gen():
-            for e1 in expression().gen(bound-1):
-                yield ExpAssignment(e1, v1)
+        if bound <= 0:
+            pass
+        else: 
+            for v1 in varName().gen():
+                for e1 in expression().gen(bound-1):
+                    yield ExpAssignment(e1, v1)
 
 
 class Exp1DotExp2EqualsExp:
@@ -77,10 +79,13 @@ class Exp1DotExp2EqualsExp:
         return str(self.e1) + "." + str(self.e2) + "=" + str(self.e3)
 
     def gen(self, bound):
-        for e1 in expression().gen(bound-1):
-            for e2 in expression().gen(bound-1):
-                for e3 in expression().gen(bound-1):
-                    yield Exp1DotExp2EqualsExp(e1, e2, e3)
+        if bound <= 0:
+            pass
+        else: 
+            for e1 in expression().gen(bound-1):
+                for e2 in expression().gen(bound-1):
+                    for e3 in expression().gen(bound-1):
+                        yield Exp1DotExp2EqualsExp(e1, e2, e3)
 
 
 class Exp1DotExp2:
@@ -92,9 +97,12 @@ class Exp1DotExp2:
         return str(self.e1) + "." + str(self.e2)
 
     def gen(self, bound):
-        for e1 in expression().gen(bound-1):
-            for e2 in expression().gen(bound-1):
-                yield Exp1DotExp2(e1, e2)
+        if bound <= 0:
+            pass
+        else: 
+            for e1 in expression().gen(bound-1):
+                for e2 in expression().gen(bound-1):
+                    yield Exp1DotExp2(e1, e2)
 
 
 class statement:
@@ -103,7 +111,6 @@ class statement:
 
     def gen(self, bound):
         if bound <= 0:
-            self.value = [expression()]
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -150,7 +157,7 @@ class whileStatement:
 
 
 def main(genValue):
-    gen = statement()
+    gen = expression()
     gen = gen.gen(genValue)
     f = open("test.txt", "w")
     for item in gen:
@@ -159,4 +166,4 @@ def main(genValue):
 
 
 if __name__ == "__main__":
-    main(2)
+    main(3)
