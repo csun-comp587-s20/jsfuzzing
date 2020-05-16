@@ -156,9 +156,9 @@ class whileStatement:
                     yield whileStatement(e1, stmt1)
 
 
-def entry_point(genValue):
+def entry_point(bound):
     generationObject = statement()
-    generator = generationObject.gen(genValue)
+    generator = generationObject.gen(bound)
     f = open("test.txt", "w")
     for item in generator:
         f.write(item)
