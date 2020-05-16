@@ -157,12 +157,12 @@ class whileStatement:
 
 
 def entry_point(genValue):
-    gen = statement()
-    gen = gen.gen(genValue)
+    generationObject = statement()
+    generator = generationObject.gen(genValue)
     f = open("test.txt", "w")
-    for item in gen:
-        print(item)
-    f.close
+    for item in generator:
+        f.write(item)
+    f.close()
 
 
 if __name__ == "__main__":
