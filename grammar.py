@@ -77,7 +77,7 @@ class Exp1DotExp2EqualsExp:
         self.e3 = e3
 
     def __str__(self):
-        return str(self.e1) + "." + str(self.e2) + "=" + str(self.e3)
+        return str(self.e1) + "[" + str(self.e2)  + "]"+ "=" + str(self.e3)
 
     def gen(self, bound):
         if bound <= 0:
@@ -95,7 +95,7 @@ class Exp1DotExp2:
         self.e2 = e2
 
     def __str__(self):
-        return str(self.e1) + "." + str(self.e2)
+        return str(self.e1) + "[" + str(self.e2) + "]"
 
     def gen(self, bound):
         if bound <= 0:
