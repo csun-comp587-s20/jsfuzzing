@@ -1,5 +1,4 @@
-import inspect
-
+import sys 
 
 class integer:
     def __init__(self):
@@ -157,7 +156,7 @@ class whileStatement:
                     yield whileStatement(e1, stmt1)
 
 
-def main(genValue):
+def entry_point(genValue):
     gen = statement()
     gen = gen.gen(genValue)
     f = open("test.txt", "w")
@@ -167,4 +166,8 @@ def main(genValue):
 
 
 if __name__ == "__main__":
-    main(3)
+    if (len(sys.argv) <= 1):
+        print("Error: bound not found. \nPlease enter the bound as grammar.py [bound]")
+    else: 
+        bound = int(sys.argv[1])
+        entry_point(bound)
