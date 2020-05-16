@@ -161,7 +161,7 @@ def entry_point(bound):
     generator = generationObject.gen(bound)
     f = open("test.txt", "w")
     for item in generator:
-        f.write(item)
+        f.write(str(item)+ "\n")
     f.close()
 
 
