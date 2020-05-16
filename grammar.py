@@ -37,7 +37,7 @@ class string:
             yield each
 
 
-class expression:
+class BaseExpression:
     def __init__(self, value=None):
         self.value = [integer(), varName(), boolean(), string(),
                       ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
@@ -66,7 +66,7 @@ class ExpAssignment:
             pass
         else:
             for v1 in varName().gen():
-                for e1 in expression().gen(bound-1):
+                for e1 in BaseExpression().gen(bound-1):
                     yield ExpAssignment(e1, v1)
 
 
@@ -83,9 +83,9 @@ class Exp1DotExp2EqualsExp:
         if bound <= 0:
             pass
         else:
-            for e1 in expression().gen(bound-1):
-                for e2 in expression().gen(bound-1):
-                    for e3 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
+                for e2 in BaseExpression().gen(bound-1):
+                    for e3 in BaseExpression().gen(bound-1):
                         yield Exp1DotExp2EqualsExp(e1, e2, e3)
 
 
@@ -101,14 +101,14 @@ class Exp1DotExp2:
         if bound <= 0:
             pass
         else:
-            for e1 in expression().gen(bound-1):
-                for e2 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
+                for e2 in BaseExpression().gen(bound-1):
                     yield Exp1DotExp2(e1, e2)
 
 
 class statement:
     def __init__(self, value=None):
-        self.value = [expression(), ifStatement(), whileStatement()]
+        self.value = [BaseExpression(), ifStatement(), whileStatement()]
 
     def gen(self, bound):
         if bound <= 0:
@@ -134,7 +134,7 @@ class ifStatement:
         if bound <= 0:
             pass
         else:
-            for e1 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     for stmt2 in statement().gen(bound-1):
                         yield ifStatement(e1, stmt1, stmt2)
@@ -152,7 +152,7 @@ class whileStatement:
         if bound <= 0:
             pass
         else:
-            for e1 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     yield whileStatement(e1, stmt1)
 
