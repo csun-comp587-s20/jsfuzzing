@@ -2,7 +2,7 @@ import sys
 import random
 
 def random_fail():
-    return False
+    return random.random() < 0.30
 
 class integer:
     def __init__(self):
