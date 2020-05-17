@@ -1,4 +1,8 @@
 import sys 
+import random
+
+def random_fail():
+    return False
 
 class integer:
     def __init__(self):
@@ -42,7 +46,7 @@ class BaseExpression:
                       ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0 or random_fail():
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -61,7 +65,7 @@ class ExpAssignment:
         return str(self.v1) + "=" + str(self.e1)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for v1 in varName().gen():
@@ -79,7 +83,7 @@ class Exp1DotExp2EqualsExp:
         return str(self.e1) + "[" + str(self.e2)  + "]"+ "=" + str(self.e3)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for e1 in BaseExpression().gen(bound-1):
@@ -97,7 +101,7 @@ class Exp1DotExp2:
         return str(self.e1) + "[" + str(self.e2) + "]"
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for e1 in BaseExpression().gen(bound-1):
@@ -110,7 +114,7 @@ class statement:
         self.value = [BaseExpression(), ifStatement(), whileStatement()]
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -130,7 +134,7 @@ class ifStatement:
         return "if(" + str(self.e1) + ") " + str(self.stmt1) + " " + str(self.stmt2)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for e1 in BaseExpression().gen(bound-1):
@@ -148,7 +152,7 @@ class whileStatement:
         return "while " + str(self.e1) + " " + str(self.stmt1)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for e1 in BaseExpression().gen(bound-1):
