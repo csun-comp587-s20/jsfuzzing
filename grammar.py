@@ -1,5 +1,8 @@
-import inspect
+import sys 
+import random
 
+def random_fail():
+    return False
 
 class integer:
     def __init__(self):
@@ -37,13 +40,13 @@ class string:
             yield each
 
 
-class expression:
+class BaseExpression:
     def __init__(self, value=None):
         self.value = [integer(), varName(), boolean(), string(),
                       ExpAssignment(), Exp1DotExp2EqualsExp(), Exp1DotExp2()]
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0 or random_fail():
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -62,11 +65,11 @@ class ExpAssignment:
         return str(self.v1) + "=" + str(self.e1)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
             for v1 in varName().gen():
-                for e1 in expression().gen(bound-1):
+                for e1 in BaseExpression().gen(bound-1):
                     yield ExpAssignment(e1, v1)
 
 
@@ -77,15 +80,15 @@ class Exp1DotExp2EqualsExp:
         self.e3 = e3
 
     def __str__(self):
-        return str(self.e1) + "." + str(self.e2) + "=" + str(self.e3)
+        return str(self.e1) + "[" + str(self.e2)  + "]"+ "=" + str(self.e3)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
-            for e1 in expression().gen(bound-1):
-                for e2 in expression().gen(bound-1):
-                    for e3 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
+                for e2 in BaseExpression().gen(bound-1):
+                    for e3 in BaseExpression().gen(bound-1):
                         yield Exp1DotExp2EqualsExp(e1, e2, e3)
 
 
@@ -95,23 +98,23 @@ class Exp1DotExp2:
         self.e2 = e2
 
     def __str__(self):
-        return str(self.e1) + "." + str(self.e2)
+        return str(self.e1) + "[" + str(self.e2) + "]"
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
-            for e1 in expression().gen(bound-1):
-                for e2 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
+                for e2 in BaseExpression().gen(bound-1):
                     yield Exp1DotExp2(e1, e2)
 
 
 class statement:
     def __init__(self, value=None):
-        self.value = [expression(), ifStatement(), whileStatement()]
+        self.value = [BaseExpression(), ifStatement(), whileStatement()]
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             for each in self.value:
                 for item in each.gen(0):
                     yield item
@@ -131,10 +134,10 @@ class ifStatement:
         return "if(" + str(self.e1) + ") " + str(self.stmt1) + " " + str(self.stmt2)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
-            for e1 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     for stmt2 in statement().gen(bound-1):
                         yield ifStatement(e1, stmt1, stmt2)
@@ -149,22 +152,26 @@ class whileStatement:
         return "while " + str(self.e1) + " " + str(self.stmt1)
 
     def gen(self, bound):
-        if bound <= 0:
+        if bound <= 0  or random_fail():
             pass
         else:
-            for e1 in expression().gen(bound-1):
+            for e1 in BaseExpression().gen(bound-1):
                 for stmt1 in statement().gen(bound-1):
                     yield whileStatement(e1, stmt1)
 
 
-def main(genValue):
-    gen = statement()
-    gen = gen.gen(genValue)
+def entry_point(bound):
+    generationObject = statement()
+    generator = generationObject.gen(bound)
     f = open("test.txt", "w")
-    for item in gen:
-        print(item)
-    f.close
+    for item in generator:
+        f.write(str(item)+ "\n")
+    f.close()
 
 
 if __name__ == "__main__":
-    main(3)
+    if (len(sys.argv) <= 1):
+        print("Error: bound not found. \nPlease enter the bound as grammar.py [bound]")
+    else: 
+        bound = int(sys.argv[1])
+        entry_point(bound)
