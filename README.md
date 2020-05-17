@@ -21,3 +21,5 @@ Run the generator by typing the comman below in your choice of shell. The comman
      python3 grammar.py [bound]
      Example: python3 grammar.py 3
 
+In order to change randomness, alter the random_fail function's return value to any desired failure probability. 
+
