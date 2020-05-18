@@ -15,7 +15,7 @@ class integer:
 
 class boolean:
     def __init__(self):
-        self.value = [True, False]
+        self.value = ["true", "false"]
 
     def gen(self, bound=None):
         for each in self.value:
@@ -33,7 +33,7 @@ class varName:
 
 class string:
     def __init__(self):
-        self.value = ["A", "B"]
+        self.value = ["\'A\'", "\'B\'"]
 
     def gen(self, bound=None):
         for each in self.value:
@@ -131,7 +131,7 @@ class ifStatement:
         self.stmt2 = stmt2
 
     def __str__(self):
-        return "if(" + str(self.e1) + ") " + str(self.stmt1) + " " + str(self.stmt2)
+        return "if(" + str(self.e1) + ") {" + str(self.stmt1) + "; " + str(self.stmt2) + "; }"
 
     def gen(self, bound):
         if bound <= 0  or random_fail():
@@ -149,7 +149,7 @@ class whileStatement:
         self.stmt1 = stmt1
 
     def __str__(self):
-        return "while " + str(self.e1) + " " + str(self.stmt1)
+        return "while (" + str(self.e1) + ") {" + str(self.stmt1) + " }"
 
     def gen(self, bound):
         if bound <= 0  or random_fail():
@@ -163,7 +163,8 @@ class whileStatement:
 def entry_point(bound):
     generationObject = statement()
     generator = generationObject.gen(bound)
-    f = open("test.txt", "w")
+    f = open("test.js", "w")
+    f.write("PETS=\"\";\nPIES=\"\"\n")
     for item in generator:
         f.write(str(item)+ "\n")
     f.close()
